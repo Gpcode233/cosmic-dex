@@ -1,3 +1,4 @@
+'use client';
 import { FAQAccordion } from '@/components/FAQAccordion';
 import { motion } from 'framer-motion';
 

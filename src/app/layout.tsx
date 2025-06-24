@@ -35,12 +35,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${orbitron.variable} font-orbitron`}>
-      <body className="font-orbitron bg-void text-white antialiased min-h-screen">
+    <html lang="en" className={orbitron.className}>
+      <body className="flex flex-col min-h-screen">
         <WalletProvider>
           <Navigation />
-          {/* <Navbar /> removed, use Navigation in pages if needed */}
-          <div className="pt-20 min-h-[80vh]">{children}</div>
+          <main className="flex-grow">{children}</main>
           <Footer />
         </WalletProvider>
       </body>

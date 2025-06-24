@@ -2,8 +2,16 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ArrowDown, X } from 'lucide-react';
+import Image from 'next/image';
 
-const tokens = [
+interface Token {
+  symbol: string;
+  name: string;
+  icon: string;
+  balance: string;
+}
+
+const tokens: Token[] = [
   { symbol: 'ETH', name: 'Ethereum', icon: '/eth.png', balance: '2.45' },
   { symbol: 'USDC', name: 'USD Coin', icon: '/usdc.png', balance: '1250.00' },
   { symbol: 'USDT', name: 'Tether', icon: '/usdt.png', balance: '500.00' },
@@ -11,8 +19,8 @@ const tokens = [
 ];
 
 export function SwapWidget() {
-  const [fromToken, setFromToken] = useState(tokens[0]);
-  const [toToken, setToToken] = useState(tokens[1]);
+  const [fromToken, setFromToken] = useState<Token>(tokens[0]);
+  const [toToken, setToToken] = useState<Token>(tokens[1]);
   const [fromAmount, setFromAmount] = useState('');
   const [toAmount, setToAmount] = useState('');
   const [selecting, setSelecting] = useState<'from' | 'to' | null>(null);
@@ -23,7 +31,7 @@ export function SwapWidget() {
     t.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleTokenSelect = (token: any) => {
+  const handleTokenSelect = (token: Token) => {
     if (selecting === 'from') setFromToken(token);
     if (selecting === 'to') setToToken(token);
     setSelecting(null);
@@ -46,7 +54,7 @@ export function SwapWidget() {
               className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#181830] border border-white/10 text-white font-semibold hover:border-cosmic-400 transition"
               onClick={() => setSelecting('from')}
             >
-              <img src={fromToken.icon} alt={fromToken.symbol} className="w-5 h-5 mr-1 inline-block" />
+              <Image src={fromToken.icon} alt={fromToken.symbol} width={20} height={20} className="w-5 h-5 mr-1 inline-block" />
               {fromToken.symbol}
               <ChevronDown className="w-4 h-4 ml-1 text-cosmic-400" />
             </button>
@@ -78,7 +86,7 @@ export function SwapWidget() {
               className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#181830] border border-white/10 text-white font-semibold hover:border-cosmic-400 transition"
               onClick={() => setSelecting('to')}
             >
-              <img src={toToken.icon} alt={toToken.symbol} className="w-5 h-5 mr-1 inline-block" />
+              <Image src={toToken.icon} alt={toToken.symbol} width={20} height={20} className="w-5 h-5 mr-1 inline-block" />
               {toToken.symbol}
               <ChevronDown className="w-4 h-4 ml-1 text-cosmic-400" />
             </button>
@@ -153,7 +161,7 @@ export function SwapWidget() {
                     className="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-cosmic-500/10 transition-colors"
                     onClick={() => handleTokenSelect(token)}
                   >
-                    <img src={token.icon} alt={token.symbol} className="w-6 h-6 rounded-full" />
+                    <Image src={token.icon} alt={token.symbol} width={24} height={24} className="w-6 h-6 rounded-full" />
                     <span className="font-bold text-white">{token.symbol}</span>
                     <span className="text-xs text-gray-400">{token.name}</span>
                   </button>
@@ -168,4 +176,4 @@ export function SwapWidget() {
       </AnimatePresence>
     </div>
   );
-} 
+}

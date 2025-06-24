@@ -1,15 +1,28 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Search } from 'lucide-react';
+import Image from 'next/image';
 
-const mockTokens = [
+interface Token {
+  symbol: string;
+  name: string;
+  icon: string;
+}
+
+const mockTokens: Token[] = [
   { symbol: 'USDT', name: 'Tether', icon: '/usdt.png' },
   { symbol: 'BTC', name: 'Bitcoin', icon: '/btc.png' },
   { symbol: 'ETH', name: 'Ethereum', icon: '/eth.png' },
   { symbol: 'SOL', name: 'Solana', icon: '/sol.png' },
 ];
 
-export function TokenSelector({ selected, onSelect, label = '', disabled = false }: any) {
+interface TokenSelectorProps {
+  selected: Token | null;
+  onSelect: (token: Token) => void;
+  disabled?: boolean;
+}
+
+export function TokenSelector({ selected, onSelect, disabled = false }: TokenSelectorProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const filtered = mockTokens.filter(t => t.symbol.toLowerCase().includes(search.toLowerCase()) || t.name.toLowerCase().includes(search.toLowerCase()));
@@ -23,7 +36,7 @@ export function TokenSelector({ selected, onSelect, label = '', disabled = false
         type="button"
       >
         <span className="flex items-center gap-2">
-          <img src={selected?.icon || '/usdt.png'} alt={selected?.symbol || '--'} className="w-6 h-6 rounded-full" />
+          <Image src={selected?.icon || '/usdt.png'} alt={selected?.symbol || '--'} width={24} height={24} className="w-6 h-6 rounded-full" />
           <span className="font-bold">{selected?.symbol || '--'}</span>
         </span>
         <ChevronDown className="w-5 h-5 text-cosmic-400" />
@@ -55,7 +68,7 @@ export function TokenSelector({ selected, onSelect, label = '', disabled = false
                   onClick={() => { onSelect(token); setOpen(false); setSearch(''); }}
                   type="button"
                 >
-                  <img src={token.icon} alt={token.symbol} className="w-6 h-6 rounded-full" />
+                  <Image src={token.icon} alt={token.symbol} width={24} height={24} className="w-6 h-6 rounded-full" />
                   <span className="font-bold text-white">{token.symbol}</span>
                   <span className="text-xs text-gray-400">{token.name}</span>
                 </button>
