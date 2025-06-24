@@ -58,7 +58,8 @@ export function Navigation() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 40 }}
                 transition={{ duration: 0.2 }}
-                className="fixed top-0 right-0 w-64 h-full bg-[#0d0c24] border-l border-cosmic-400/20 shadow-2xl z-50 flex flex-col p-6 gap-6"
+                className="fixed top-0 right-0 w-64 h-full border-l border-cosmic-400/20 shadow-2xl z-50 flex flex-col p-6 gap-6"
+                        style={{ backgroundColor: '#0d0c24', opacity: 0.9 }}
               >
                 <button className="self-end mb-4" onClick={() => setOpen(false)} aria-label="Close menu">
                   <X className="w-7 h-7 text-cosmic-400" />
