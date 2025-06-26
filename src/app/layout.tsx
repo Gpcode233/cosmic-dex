@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Orbitron } from "next/font/google";
 import "./globals.css";
-import { WalletProvider } from "@/components/WalletProvider";
+import dynamic from "next/dynamic";
 import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
+import ClientRoot from "./ClientRoot";
 
 const orbitron = Orbitron({
   subsets: ["latin"],
@@ -37,11 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={orbitron.className}>
       <body className="flex flex-col min-h-screen">
-        <WalletProvider>
-          <Navigation />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </WalletProvider>
+        <ClientRoot>{children}</ClientRoot>
       </body>
     </html>
   );

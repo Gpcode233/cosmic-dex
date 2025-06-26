@@ -9,6 +9,7 @@ import { useState } from 'react';
 const navLinks = [
   { name: 'Home', href: '/' },
   { name: 'Swap', href: '/swap' },
+  { name: 'Explore', href: '/explore' },
   { name: 'Portfolio', href: '/portfolio' },
   { name: 'About', href: '/about' },
   { name: 'FAQ', href: '/faq' },
@@ -47,41 +48,43 @@ export function Navigation() {
           <div className="min-w-0 flex-shrink-0"><ConnectButton /></div>
         </div>
         {/* Hamburger for mobile */}
-        <div className="md:hidden">
+        <div className="md:hidden bg-[#0d0c24]">
           <button onClick={() => setOpen(true)} aria-label="Open menu">
             <Menu className="w-8 h-8 text-cosmic-400" />
           </button>
           <AnimatePresence>
             {open && (
-              <motion.div
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 40 }}
-                transition={{ duration: 0.2 }}
-                className="fixed top-0 right-0 w-64 h-full border-l border-cosmic-400/20 shadow-2xl z-50 flex flex-col p-6 gap-6"
-                        style={{ backgroundColor: '#0d0c24', opacity: 0.9 }}
-              >
-                <button className="self-end mb-4" onClick={() => setOpen(false)} aria-label="Close menu">
-                  <X className="w-7 h-7 text-cosmic-400" />
-                </button>
-                {navLinks.map(link => (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className="text-lg font-bold text-gray-300 hover:text-white transition-colors py-2"
-                    onClick={() => setOpen(false)}
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-                <a
-                  href="#"
-                  className="mt-4 px-3 py-1.5 rounded-lg font-semibold text-sm text-white bg-[#181830] border-2 border-white hover:bg-[#232347] hover:border-[#00ffe7] shadow-lg transition-all duration-300 text-center block"
+              <>
+                <div className="fixed inset-0 bg-[#0d0c24] z-40" />
+                <motion.div
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 40 }}
+                  transition={{ duration: 0.2 }}
+                  className="fixed top-0 right-0 w-64 h-full border-l border-cosmic-400/20 shadow-2xl z-50 flex flex-col p-6 gap-6 bg-[#0d0c24]"
                 >
-                  Get the App
-                </a>
-                <div className="mt-4"><ConnectButton /></div>
-              </motion.div>
+                  <button className="self-end mb-4" onClick={() => setOpen(false)} aria-label="Close menu">
+                    <X className="w-7 h-7 text-cosmic-400" />
+                  </button>
+                  {navLinks.map(link => (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      className="text-lg font-bold text-gray-300 hover:text-white transition-colors py-2"
+                      onClick={() => setOpen(false)}
+                    >
+                      {link.name}
+                    </Link>
+                  ))} 
+                  <a
+                    href="#"
+                    className="mt-4 px-3 py-1.5 rounded-lg font-semibold text-sm text-white bg-[#181830] border-2 border-white hover:bg-[#232347] hover:border-[#00ffe7] shadow-lg transition-all duration-300 text-center block"
+                  >
+                    Get the App
+                  </a>
+                  <div className="mt-4"><ConnectButton /></div>
+                </motion.div>
+              </>
             )}
           </AnimatePresence>
         </div>
