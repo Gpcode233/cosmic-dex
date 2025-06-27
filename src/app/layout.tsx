@@ -1,11 +1,20 @@
 import type { Metadata } from "next";
-import { Orbitron } from "next/font/google";
+import { Orbitron, Inter } from "next/font/google";
 import "./globals.css";
 import ClientRoot from "./ClientRoot";
+import { Footer } from "../components/Footer";
 
 const orbitron = Orbitron({
   subsets: ["latin"],
   variable: "--font-orbitron",
+  display: "swap",
+  weight: ["400", "500", "700", "900"],
+  preload: true,
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
   display: "swap",
   weight: ["400", "500", "700", "900"],
   preload: true,
@@ -33,9 +42,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={orbitron.className}>
+    <html lang="en" className={`${orbitron.variable} ${inter.variable}`}>
       <body className="flex flex-col min-h-screen">
-        <ClientRoot>{children}</ClientRoot>
+        <div className="flex-1 flex flex-col">
+          <ClientRoot>{children}</ClientRoot>
+        </div>
+        <Footer />
       </body>
     </html>
   );

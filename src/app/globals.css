@@ -43,19 +43,20 @@ body::before {
   z-index: -1;
 }
 
-/* Ensure Orbitron is used everywhere */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-orbitron), 'Orbitron', monospace;
+/* Navbars and headings use Orbitron */
+nav, h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-orbitron), 'Orbitron', Arial, sans-serif;
   font-weight: 700;
 }
 
+/* Body text uses Inter */
 p, span, div, button, input {
-  font-family: var(--font-orbitron), 'Orbitron', monospace;
+  font-family: var(--font-inter), 'Inter', Arial, sans-serif;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
