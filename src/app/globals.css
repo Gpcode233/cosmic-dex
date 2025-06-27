@@ -49,9 +49,22 @@ nav, h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
 }
 
-/* Body text uses Inter */
+/* Body text uses Orbitron by default */
 p, span, div, button, input {
-  font-family: var(--font-inter), 'Inter', Arial, sans-serif;
+  font-family: var(--font-orbitron), 'Orbitron', Arial, sans-serif;
+}
+
+/* Swap dropdowns use Inter */
+.swap-dropdown,
+.swap-dropdown * {
+  font-family: var(--font-inter), 'Inter', Arial, sans-serif !important;
+}
+
+/* Wider dropdown for swap */
+.swap-dropdown,
+.swap-dropdown .dropdown-content {
+  min-width: 220px !important;
+  max-width: 320px;
 }
 
 /* Custom scrollbar */

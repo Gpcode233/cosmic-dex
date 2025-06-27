@@ -3,92 +3,116 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Home, Repeat, Search, User, Info, HelpCircle } from 'lucide-react';
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 
 const navLinks = [
-  { name: 'Home', href: '/' },
-  { name: 'Swap', href: '/swap' },
-  { name: 'Explore', href: '/explore' },
-  { name: 'Portfolio', href: '/portfolio' },
-  { name: 'About', href: '/about' },
-  { name: 'FAQ', href: '/faq' },
+  { name: 'Home', href: '/', icon: Home },
+  { name: 'Swap', href: '/swap', icon: Repeat },
+  { name: 'Explore', href: '/explore', icon: Search },
+  { name: 'Portfolio', href: '/portfolio', icon: User },
+  { name: 'About', href: '/about', icon: Info },
+  { name: 'FAQ', href: '/faq', icon: HelpCircle },
 ];
 
+const mainLinks = navLinks.slice(0, 4); // Show these in top nav on mobile
+const menuLinks = navLinks.slice(4); // These go in the menu on mobile
+
+const BottomNav = dynamic(() => import('./BottomNav'), { ssr: false });
+
 export function Navigation() {
-  const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center bg-[#0d0c24]/95 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-cosmic-500/10 font-orbitron rounded-b-2xl">
-      <div className="flex items-center gap-6 w-full justify-between">
-        <Link href="/" className="flex items-center gap-3 cursor-pointer flex-shrink-0">
-          <span className="relative flex items-center gap-2">
-            <Image src="/galaxy.svg" alt="Cosmic DEX Logo" width={40} height={40} priority />
-            <span className="text-2xl font-extrabold text-gray-300 transition-colors duration-200 hover:text-white tracking-wide select-none leading-tight">COSMIC DEX</span>
-          </span>
-        </Link>
-        <div className="hidden md:flex flex-1 items-center justify-center">
-          <div className="flex gap-2">
-            {navLinks.map(link => (
-              <motion.div key={link.name} whileHover={{ scale: 1.08 }}>
-                <Link href={link.href} className="text-base font-medium text-gray-300 hover:text-white transition-colors px-2 py-1 rounded whitespace-nowrap">
+    <>
+      {/* Top Navigation Bar */}
+      <nav className="fixed top-0 left-0 right-0 z-50 px-4 py-3 flex justify-between items-center bg-[#0a1747] border-b border-[#192a56] shadow-lg font-orbitron">
+        <div className="flex items-center gap-4 w-full justify-between">
+          <Link href="/" className="flex items-center gap-2 cursor-pointer flex-shrink-0">
+            <Image src="/galaxy.svg" alt="Cosmic DEX Logo" width={36} height={36} priority />
+            <span className="text-xl font-extrabold text-white tracking-wide select-none leading-tight">COSMIC DEX</span>
+          </Link>
+          {/* Desktop Nav Links */}
+          <div className="hidden md:flex flex-1 items-center justify-center">
+            <div className="flex gap-3">
+              {navLinks.map(link => (
+                <Link key={link.name} href={link.href} className="flex items-center gap-1 px-3 py-2 rounded-lg text-base font-semibold text-gray-200 hover:bg-[#132c56] hover:text-white transition-all">
+                  <link.icon className="w-5 h-5 mb-0.5" />
                   {link.name}
                 </Link>
-              </motion.div>
-            ))}
+              ))}
+            </div>
+          </div>
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center gap-3 flex-shrink-0">
+            <a
+              href="#"
+              className="px-3 py-1.5 rounded-lg font-semibold text-sm text-white bg-[#181830] border border-[#233c7b] hover:bg-[#232347] hover:border-[#00ffe7] shadow-lg transition-all duration-300 whitespace-nowrap"
+            >
+              Get the App
+            </a>
+            <div className="min-w-0 flex-shrink-0"><ConnectButton /></div>
+          </div>
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center">
+            <button onClick={() => setMobileMenuOpen(true)} aria-label="Open menu" className="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cosmic-400">
+              <Menu className="w-7 h-7 text-white" />
+            </button>
           </div>
         </div>
-        <div className="hidden md:flex items-center gap-2 flex-shrink-0">
-          <motion.a
-            href="#"
-            className="px-3 py-1.5 rounded-lg font-semibold text-sm text-white bg-[#181830] border-2 border-white hover:bg-[#232347] hover:border-[#00ffe7] shadow-lg transition-all duration-300 whitespace-nowrap"
-            whileHover={{ scale: 1.07 }}
-          >
-            Get the App
-          </motion.a>
-          <div className="min-w-0 flex-shrink-0"><ConnectButton /></div>
-        </div>
-        {/* Hamburger for mobile */}
-        <div className="md:hidden bg-[#0d0c24]">
-          <button onClick={() => setOpen(true)} aria-label="Open menu">
-            <Menu className="w-8 h-8 text-cosmic-400" />
-          </button>
-          <AnimatePresence>
-            {open && (
-              <>
-                <div className="fixed inset-0 bg-[#0d0c24] z-40" />
-                <motion.div
-                  initial={{ opacity: 0, x: 40 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 40 }}
-                  transition={{ duration: 0.2 }}
-                  className="fixed top-0 right-0 w-64 h-full border-l border-cosmic-400/20 shadow-2xl z-50 flex flex-col p-6 gap-6 bg-[#0d0c24]"
+      </nav>
+      {/* Mobile Slide-out Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            <div className="fixed inset-0 bg-black/60 z-50" onClick={() => setMobileMenuOpen(false)} />
+            <motion.div
+              initial={{ opacity: 0, x: 60 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 60 }}
+              transition={{ duration: 0.2 }}
+              className="fixed top-0 right-0 w-64 h-full border-l border-[#233c7b] shadow-2xl z-50 flex flex-col p-6 gap-6 bg-[#0a1747]"
+            >
+              <button className="self-end mb-4" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
+                <X className="w-7 h-7 text-white" />
+              </button>
+              {mainLinks.map(link => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className="flex items-center gap-2 text-lg font-bold text-gray-200 hover:text-white transition-colors py-2"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  <button className="self-end mb-4" onClick={() => setOpen(false)} aria-label="Close menu">
-                    <X className="w-7 h-7 text-cosmic-400" />
-                  </button>
-                  {navLinks.map(link => (
-                    <Link
-                      key={link.name}
-                      href={link.href}
-                      className="text-lg font-bold text-gray-300 hover:text-white transition-colors py-2"
-                      onClick={() => setOpen(false)}
-                    >
-                      {link.name}
-                    </Link>
-                  ))} 
-                  <a
-                    href="#"
-                    className="mt-4 px-3 py-1.5 rounded-lg font-semibold text-sm text-white bg-[#181830] border-2 border-white hover:bg-[#232347] hover:border-[#00ffe7] shadow-lg transition-all duration-300 text-center block"
-                  >
-                    Get the App
-                  </a>
-                  <div className="mt-4"><ConnectButton /></div>
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-    </nav>
+                  <link.icon className="w-5 h-5" />
+                  {link.name}
+                </Link>
+              ))}
+              <div className="border-t border-[#233c7b] my-2" />
+              {menuLinks.map(link => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className="flex items-center gap-2 text-base font-semibold text-gray-200 hover:text-white transition-colors py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <link.icon className="w-5 h-5" />
+                  {link.name}
+                </Link>
+              ))}
+              <a
+                href="#"
+                className="mt-4 px-3 py-1.5 rounded-lg font-semibold text-sm text-white bg-[#181830] border border-[#233c7b] hover:bg-[#232347] hover:border-[#00ffe7] shadow-lg transition-all duration-300 text-center block"
+              >
+                Get the App
+              </a>
+              <div className="mt-4"><ConnectButton /></div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+      {/* Bottom Navigation for Mobile */}
+      <BottomNav onMenu={() => setMobileMenuOpen(true)} />
+    </>
   );
 }

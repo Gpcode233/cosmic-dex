@@ -33,9 +33,9 @@ export default function TokenSelector({ selectedToken, onSelect, tokens, side }:
   );
 
   return (
-    <div className="relative">
+    <div className="relative swap-dropdown">
       <button
-        className="flex items-center bg-[#1e1e22] rounded-[0.75rem] px-4 py-2 min-w-[100px] border border-[#2D2D30] hover:bg-[#2A2A2E] transition"
+        className="flex items-center bg-[#1e1e22] rounded-[0.75rem] px-4 py-2 min-w-[100px] border border-[#2D2D30] hover:bg-[#2A2A2E] transition w-full"
         onClick={() => setOpen((o) => !o)}
         type="button"
         aria-label={`Select ${side} token`}
@@ -50,12 +50,12 @@ export default function TokenSelector({ selectedToken, onSelect, tokens, side }:
               className="inline-block"
             />
           </span>
-          <span className="font-orbitron font-bold text-white text-base">{selectedToken.symbol}</span>
+          <span className="font-inter font-bold text-white text-base">{selectedToken.symbol}</span>
         </span>
         <ChevronDown className="ml-2 text-[#bbbbbb]" size={20} />
       </button>
       {open && (
-        <div className="absolute z-10 mt-2 left-0 w-full bg-[#1e1e22] rounded-[0.75rem] border border-[#2D2D30] shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute z-10 mt-2 left-0 w-full bg-[#1e1e22] rounded-[0.75rem] border border-[#2D2D30] shadow-lg max-h-60 overflow-y-auto swap-dropdown dropdown-content">
           <div className="p-2">
             <input
               type="text"
@@ -72,7 +72,7 @@ export default function TokenSelector({ selectedToken, onSelect, tokens, side }:
             filteredTokens.map((token) => (
               <button
                 key={token.symbol + token.name}
-                className="flex items-center w-full px-4 py-2 hover:bg-[#2A2A2E] transition text-white font-orbitron"
+                className="flex items-center w-full px-4 py-2 hover:bg-[#2A2A2E] transition text-white font-inter"
                 onClick={() => {
                   onSelect(token);
                   setOpen(false);
