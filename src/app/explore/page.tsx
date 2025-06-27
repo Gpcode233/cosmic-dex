@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 
 interface TokenData {
   address: string;
@@ -15,24 +15,6 @@ interface TokenData {
   icon: string;
 }
 
-interface DexData {
-  schemaVersion: string;
-  pairs: Array<{
-    chainId: string;
-    dexId: string;
-    baseToken: TokenData;
-    quoteToken: TokenData;
-    priceNative: string;
-    priceUsd: string;
-    volume24h: string;
-    volume24hQuote: string;
-    txns24h: string;
-    priceChange24h: string;
-    pairAddress: string;
-    url: string;
-  }>;
-}
-
 export default function Explore() {
   const [tokens, setTokens] = useState<TokenData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +22,6 @@ export default function Explore() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedChain, setSelectedChain] = useState('all');
   const [sortField, setSortField] = useState<'price' | 'volume' | 'change'>('price');
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     // List of popular tokens to show by default
@@ -50,7 +31,7 @@ export default function Explore() {
       setLoading(true);
       setError(null);
       try {
-        let pairs: any[] = [];
+        let pairs: unknown[] = [];
         if (query) {
           // Search for pairs matching the query
           const res = await fetch(`https://api.dexscreener.com/latest/dex/search/?q=${encodeURIComponent(query)}`);
@@ -67,16 +48,20 @@ export default function Explore() {
             }
           }
         }
-        const transformedData = pairs.map((pair: any) => ({
-          address: pair.baseToken.address,
-          name: pair.baseToken.name,
-          symbol: pair.baseToken.symbol,
-          priceUsd: pair.priceUsd,
-          volume24h: pair.volume?.usd || pair.volume24h || "0",
-          priceChange24h: pair.priceChange?.h24 || pair.priceChange24h || "0",
-          chainId: pair.chainId,
-          icon: pair.info?.imageUrl || '',
-        }));
+        const transformedData = pairs.map((pair: unknown) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const p = pair as Record<string, any>;
+          return {
+            address: p.baseToken.address,
+            name: p.baseToken.name,
+            symbol: p.baseToken.symbol,
+            priceUsd: p.priceUsd,
+            volume24h: p.volume?.usd || p.volume24h || "0",
+            priceChange24h: p.priceChange?.h24 || p.priceChange24h || "0",
+            chainId: p.chainId,
+            icon: p.info?.imageUrl || '',
+          };
+        });
         setTokens(transformedData);
         setLoading(false);
       } catch (err) {
@@ -199,10 +184,12 @@ export default function Explore() {
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-                  <img
+                  <Image
                     src={token.icon}
                     alt={`${token.symbol} logo`}
                     className="w-8 h-8"
+                    width={32}
+                    height={32}
                   />
                 </div>
                 <div>

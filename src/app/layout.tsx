@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Orbitron } from "next/font/google";
 import "./globals.css";
-import dynamic from "next/dynamic";
-import { Footer } from "@/components/Footer";
-import { Navigation } from "@/components/Navigation";
 import ClientRoot from "./ClientRoot";
 
 const orbitron = Orbitron({

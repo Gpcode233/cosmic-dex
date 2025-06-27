@@ -10,6 +10,8 @@ interface Token {
   name: string;
   icon: string;
   balance: number;
+  address: string;
+  decimals: number;
 }
 
 interface TokenSelectorProps {
