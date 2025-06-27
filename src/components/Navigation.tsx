@@ -22,7 +22,6 @@ const menuLinks = navLinks.slice(4); // These go in the menu on mobile
 const BottomNav = dynamic(() => import('./BottomNav'), { ssr: false });
 
 export function Navigation() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   return (
     <>
