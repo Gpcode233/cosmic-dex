@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 
-interface Token {
+export interface Token {
   symbol: string;
   name: string;
   icon: string;

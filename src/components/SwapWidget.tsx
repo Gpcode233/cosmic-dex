@@ -8,6 +8,30 @@ import { motion } from "framer-motion";
 import { ArrowUpDown, Settings } from "lucide-react";
 import TokenSelector, { Token } from "./TokenSelector";
 
+// Define proper types for the API response
+interface CoinGeckoToken {
+  symbol: string;
+  name: string;
+  image: string;
+  platforms?: {
+    ethereum?: string;
+  };
+  decimals?: number;
+}
+
+interface QuoteResponse {
+  buyAmount: string;
+  sellAmount: string;
+  allowanceTarget: string;
+  to: string;
+  data: string;
+  value: string;
+  gas?: string;
+  estimatedGas?: string;
+  guaranteedPrice?: string;
+  estimatedPriceImpact?: string;
+}
+
 export default function SwapWidget() {
   const [tokens, setTokens] = useState<Token[]>([]);
 
@@ -23,9 +47,8 @@ export default function SwapWidget() {
           );
           if (!res.ok) throw new Error("Failed to fetch tokens");
           const data = await res.json();
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           allTokens = allTokens.concat(
-            data.map((t: Record<string, any>) => ({
+            data.map((t: CoinGeckoToken) => ({
               symbol: String(t.symbol).toUpperCase(),
               name: t.name,
               icon: t.image,
@@ -37,13 +60,11 @@ export default function SwapWidget() {
         }
         setTokens(allTokens);
       } catch {
-        setTokenError("Failed to load tokens. Showing fallback list.");
         setTokens([
           { symbol: "ETH", name: "Ethereum", icon: "/eth.svg", balance: 1.23, address: "", decimals: 18 },
           { symbol: "USDC", name: "USD Coin", icon: "/usdc.svg", balance: 2500, address: "", decimals: 6 },
           { symbol: "WETH", name: "Wrapped ETH", icon: "/weth.svg", balance: 0.5, address: "", decimals: 18 },
         ]);
-        setLoadingTokens(false);
       }
     };
     fetchTokens();
@@ -103,7 +124,7 @@ export default function SwapWidget() {
   const [showSettings, setShowSettings] = useState(false);
 
   // Swap quote state
-  const [quote, setQuote] = useState<Record<string, any> | null>(null);
+  const [quote, setQuote] = useState<QuoteResponse | null>(null);
   const [quoteLoading, setQuoteLoading] = useState(false);
   const [quoteError, setQuoteError] = useState<string | null>(null);
   const [swapLoading, setSwapLoading] = useState(false);
@@ -118,6 +139,7 @@ export default function SwapWidget() {
 
   // Get Quote from 0x API
   const handleGetQuote = async () => {
+    if (!fromToken || !toToken) return;
     setQuoteLoading(true);
     setQuoteError(null);
     setQuote(null);
@@ -140,7 +162,7 @@ export default function SwapWidget() {
 
   // Execute Swap
   const handleSwap = async () => {
-    if (!quote || !address) return;
+    if (!quote || !address || !fromToken) return;
     setSwapLoading(true);
     setSwapError(null);
     setSwapSuccess(null);
