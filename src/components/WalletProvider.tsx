@@ -10,7 +10,7 @@ const config = getDefaultConfig({
   appName: 'Cosmic DEX',
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '',
   chains: [mainnet, polygon, optimism, arbitrum, base, zora],
-  ssr: true, // Enable SSR
+  ssr: false, // Disable SSR to prevent indexedDB errors
 });
 
 const queryClient = new QueryClient();

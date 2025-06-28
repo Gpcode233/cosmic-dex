@@ -34,7 +34,8 @@ interface QuoteResponse {
 
 export default function SwapWidget() {
   const [tokens, setTokens] = useState<Token[]>([]);
-
+  const [balancesLoading, setBalancesLoading] = useState(false);
+  const [tokensError, setTokensError] = useState<string | null>(null);
   const { address } = useAccount();
 
   useEffect(() => {
@@ -59,59 +60,70 @@ export default function SwapWidget() {
           );
         }
         setTokens(allTokens);
+        setTokensError(null);
       } catch {
-        setTokens([
-          { symbol: "ETH", name: "Ethereum", icon: "/eth.svg", balance: 1.23, address: "", decimals: 18 },
-          { symbol: "USDC", name: "USD Coin", icon: "/usdc.svg", balance: 2500, address: "", decimals: 6 },
-          { symbol: "WETH", name: "Wrapped ETH", icon: "/weth.svg", balance: 0.5, address: "", decimals: 18 },
-        ]);
+        if (!address) {
+          setTokens([
+            { symbol: "ETH", name: "Ethereum", icon: "/eth.svg", balance: 1.23, address: "", decimals: 18 },
+            { symbol: "USDC", name: "USD Coin", icon: "/usdc.svg", balance: 2500, address: "", decimals: 6 },
+            { symbol: "WETH", name: "Wrapped ETH", icon: "/weth.svg", balance: 0.5, address: "", decimals: 18 },
+          ]);
+          setTokensError(null);
+        } else {
+          setTokensError("Failed to fetch tokens. Please try again later.");
+        }
       }
     };
     fetchTokens();
-  }, []);
+  }, [address]);
 
   // Fetch balances for all tokens when tokens or address change
   useEffect(() => {
     const fetchBalances = async () => {
       if (!address || tokens.length === 0) return;
-      const provider = new BrowserProvider(window.ethereum);
-      const updatedTokens = await Promise.all(
-        tokens.map(async (token) => {
-          // ETH balance
-          if (token.symbol === "ETH") {
-            try {
-              const bal = await provider.getBalance(address);
-              return { ...token, balance: parseFloat(formatEther(bal)) };
-            } catch {
-              return token;
-            }
-          }
-          // ERC20
-          if (token.address && token.address !== "") {
-            try {
-              const erc20 = new Contract(
-                token.address,
-                ["function balanceOf(address) view returns (uint256)", "function decimals() view returns (uint8)"],
-                provider
-              );
-              const bal = await erc20.balanceOf(address);
-              let decimals = token.decimals;
-              if (!decimals) {
-                try {
-                  decimals = await erc20.decimals();
-                } catch {
-                  decimals = 18;
-                }
+      setBalancesLoading(true);
+      try {
+        const provider = new BrowserProvider(window.ethereum);
+        const updatedTokens = await Promise.all(
+          tokens.map(async (token) => {
+            // ETH balance
+            if (token.symbol === "ETH") {
+              try {
+                const bal = await provider.getBalance(address);
+                return { ...token, balance: parseFloat(formatEther(bal)) };
+              } catch {
+                return token;
               }
-              return { ...token, balance: parseFloat(formatUnits(bal, decimals)) };
-            } catch {
-              return token;
             }
-          }
-          return token;
-        })
-      );
-      setTokens(updatedTokens);
+            // ERC20
+            if (token.address && token.address !== "") {
+              try {
+                const erc20 = new Contract(
+                  token.address,
+                  ["function balanceOf(address) view returns (uint256)", "function decimals() view returns (uint8)"],
+                  provider
+                );
+                const bal = await erc20.balanceOf(address);
+                let decimals = token.decimals;
+                if (!decimals) {
+                  try {
+                    decimals = await erc20.decimals();
+                  } catch {
+                    decimals = 18;
+                  }
+                }
+                return { ...token, balance: parseFloat(formatUnits(bal, decimals)) };
+              } catch {
+                return token;
+              }
+            }
+            return token;
+          })
+        );
+        setTokens(updatedTokens);
+      } finally {
+        setBalancesLoading(false);
+      }
     };
     fetchBalances();
   }, [address, tokens]);
@@ -217,7 +229,9 @@ export default function SwapWidget() {
       className="bg-white/10 backdrop-blur-md rounded-[1rem] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.5)] border border-[#2D2D30] min-w-[360px] max-w-[500px] mx-auto flex flex-col gap-4 font-orbitron"
     >
       {/* Only render if tokens are loaded */}
-      {fromToken && toToken ? (
+      {tokensError ? (
+        <div className="text-center text-red-500">{tokensError}</div>
+      ) : fromToken && toToken ? (
         <>
           {/* Header with Settings */}
           <div className="flex items-center justify-between mb-2">
@@ -274,7 +288,7 @@ export default function SwapWidget() {
                 side="from"
               />
               <span className="text-xs text-[#bbbbbb] font-inter">
-                Balance: {fromToken.balance}
+                Balance: {balancesLoading ? <span className="animate-pulse">...</span> : fromToken.balance}
               </span>
             </div>
             <input
@@ -319,7 +333,7 @@ export default function SwapWidget() {
                 side="to"
               />
               <span className="text-xs text-[#bbbbbb] font-inter">
-                Balance: {toToken.balance}
+                Balance: {balancesLoading ? <span className="animate-pulse">...</span> : toToken.balance}
               </span>
             </div>
             <input
@@ -333,26 +347,34 @@ export default function SwapWidget() {
           </div>
 
           {/* Quote & Swap Controls */}
-          {address && quote && (
-            <div className="bg-[#23232a] rounded-xl p-4 mt-4 border border-cosmic-400/20">
-              <div className="flex flex-col gap-2 text-sm text-white">
+          <div className="bg-[#23232a] rounded-xl p-4 mt-4 border border-cosmic-400/20">
+            {address && quote && (
+              <div className="flex flex-col gap-2 text-sm text-white mb-4">
                 <div className="flex justify-between"><span>Expected Output</span><span>{formatUnits(quote.buyAmount as string, toToken.decimals || 18)} {toToken.symbol}</span></div>
                 <div className="flex justify-between"><span>Minimum Received</span><span>{formatUnits(quote.guaranteedPrice ? (BigInt(quote.buyAmount as string) * BigInt(Math.floor(Number(quote.guaranteedPrice) * 1e6)) / BigInt(1e6)).toString() : quote.buyAmount as string, toToken.decimals || 18)} {toToken.symbol}</span></div>
                 <div className="flex justify-between"><span>Estimated Gas</span><span>{quote.estimatedGas || quote.gas || "-"}</span></div>
                 <div className="flex justify-between"><span>Price Impact</span><span>{quote.estimatedPriceImpact ? `${(Number(quote.estimatedPriceImpact) * 100).toFixed(2)}%` : '-'}</span></div>
               </div>
-              <button
-                className="mt-4 w-full px-4 py-2 bg-cosmic-500 text-white rounded-xl font-bold hover:bg-cosmic-400 transition disabled:opacity-50"
-                onClick={handleSwap}
-                disabled={swapLoading}
-                type="button"
-              >
-                {swapLoading ? "Swapping..." : "Swap"}
-              </button>
-              {swapError && <div className="text-red-500 text-xs mt-2">{swapError}</div>}
-              {swapSuccess && <div className="text-green-500 text-xs mt-2">{swapSuccess}</div>}
-            </div>
-          )}
+            )}
+            <button
+              className="mt-2 w-full px-4 py-2 bg-cosmic-500 text-white rounded-xl font-bold hover:bg-cosmic-400 transition disabled:opacity-50"
+              onClick={handleSwap}
+              disabled={
+                swapLoading ||
+                !address ||
+                !fromToken ||
+                !toToken ||
+                !fromAmount ||
+                parseFloat(fromAmount) <= 0 ||
+                !quote
+              }
+              type="button"
+            >
+              {swapLoading ? "Swapping..." : "Swap"}
+            </button>
+            {swapError && <div className="text-red-500 text-xs mt-2">{swapError}</div>}
+            {swapSuccess && <div className="text-green-500 text-xs mt-2">{swapSuccess}</div>}
+          </div>
         </>
       ) : (
         <div className="text-center text-white">Loading tokens...</div>
