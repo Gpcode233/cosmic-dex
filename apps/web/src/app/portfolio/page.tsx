@@ -13,7 +13,7 @@ import {
   Wallet, RefreshCw, ExternalLink, Copy, CheckCircle,
   Eye, EyeOff
 } from 'lucide-react';
-import { useCovalentPortfolio } from '../../hooks/useCovalentPortfolio';
+import { useCovalentPortfolio } from '@utils/useCovalentPortfolio';
 import PortfolioStats from '../../components/PortfolioStats';
 
 export default function PortfolioPage() {
