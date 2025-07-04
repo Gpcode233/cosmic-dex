@@ -6,7 +6,7 @@ import { useAccount } from "wagmi";
 import { Contract, formatEther, formatUnits, parseUnits, BrowserProvider } from "ethers";
 import { motion } from "framer-motion";
 import { ArrowUpDown, Settings } from "lucide-react";
-import TokenSelector, { Token } from "./TokenSelector";
+import TokenSelector, { Token } from "ui/TokenSelector";
 
 // Define proper types for the API response
 interface CoinGeckoToken {

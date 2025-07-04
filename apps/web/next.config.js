@@ -3,6 +3,7 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    domains: ['assets.coingecko.com'],
     remotePatterns: [
       {
         protocol: 'https',

@@ -2,7 +2,6 @@
   "private": true,
   "workspaces": [
     "apps/web",
-    "apps/mobile-app",
     "packages/ui",
     "packages/utils"
   ],

@@ -1,5 +1,5 @@
 'use client';
-import { FAQAccordion } from '@/components/FAQAccordion';
+import { FAQAccordion } from 'ui/FAQAccordion';
 import { motion } from 'framer-motion';
 
 export default function FAQPage() {

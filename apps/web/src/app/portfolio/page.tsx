@@ -14,7 +14,7 @@ import {
   Eye, EyeOff
 } from 'lucide-react';
 import { useCovalentPortfolio } from '@utils/useCovalentPortfolio';
-import PortfolioStats from '../../components/PortfolioStats';
+import PortfolioStats from 'ui/PortfolioStats';
 
 export default function PortfolioPage() {
   const { address, isConnected } = useAccount();
