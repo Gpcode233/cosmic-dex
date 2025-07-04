@@ -3060,6 +3060,13 @@
       margin-block-end: calc(calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse)));
     }
   }
+  .space-y-8 {
+    :where(& > :not(:last-child)) {
+      --tw-space-y-reverse: 0;
+      margin-block-start: calc(calc(var(--spacing) * 8) * var(--tw-space-y-reverse));
+      margin-block-end: calc(calc(var(--spacing) * 8) * calc(1 - var(--tw-space-y-reverse)));
+    }
+  }
   .divide-y {
     :where(& > :not(:last-child)) {
       --tw-divide-y-reverse: 0;
@@ -3067,6 +3074,11 @@
       border-top-style: var(--tw-border-style);
       border-top-width: calc(1px * var(--tw-divide-y-reverse));
       border-bottom-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
+    }
+  }
+  .divide-\[\#232347\] {
+    :where(& > :not(:last-child)) {
+      border-color: #232347;
     }
   }
   .divide-white\/10 {
@@ -3170,6 +3182,9 @@
   }
   .bg-\[\#181830\] {
     background-color: #181830;
+  }
+  .bg-\[\#181830\]\/80 {
+    background-color: color-mix(in oklab, #181830 80%, transparent);
   }
   .bg-\[\#232347\] {
     background-color: #232347;
@@ -3550,6 +3565,13 @@
     &:hover {
       @media (hover: hover) {
         background-color: #132c56;
+      }
+    }
+  }
+  .hover\:bg-\[\#181830\] {
+    &:hover {
+      @media (hover: hover) {
+        background-color: #181830;
       }
     }
   }
