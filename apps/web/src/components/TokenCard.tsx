@@ -1,32 +1,30 @@
 "use client";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
-import { ArrowDown, ArrowUp, Swap, Send, Download, Upload } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowLeftRight, Send, Download, Upload } from 'lucide-react';
 
-// Example price data (replace with real data as needed)
-const data = [
-  { time: '9:00', price: 18.2 },
-  { time: '10:00', price: 18.5 },
-  { time: '11:00', price: 18.83 },
-  { time: '12:00', price: 18.5 },
-  { time: '13:00', price: 18.0 },
-  { time: '14:00', price: 17.9 },
-  { time: '15:00', price: 17.87 },
-];
+export interface TokenCardProps {
+  symbol: string;
+  price: number;
+  change: number;
+  balance: number;
+  logo: string;
+}
 
-export function TokenCard() {
+export function TokenCard({ symbol, price, change, balance, logo }: TokenCardProps) {
   return (
     <div className="bg-[#181830] rounded-2xl shadow-lg p-6 max-w-md mx-auto text-white">
       <div>
-        <h2 className="text-lg font-semibold">AVAX</h2>
+        <h2 className="text-lg font-semibold">{symbol}</h2>
         <div className="flex items-end gap-2">
-          <span className="text-3xl font-bold">$17.93</span>
-          <span className="text-red-400 text-sm">-4.25%</span>
+          <span className="text-3xl font-bold">${price.toFixed(2)}</span>
+          <span className={change >= 0 ? "text-green-400 text-sm" : "text-red-400 text-sm"}>{change >= 0 ? '+' : ''}{change.toFixed(2)}%</span>
         </div>
-        <div className="text-gray-400 text-xs">~ $0.796 (Jul 4, 3:36 PM)</div>
+        {/* Optionally, add a timestamp or other info here */}
       </div>
+      {/* Chart placeholder, can be replaced with real chart data if available */}
       <ResponsiveContainer width="100%" height={120}>
-        <LineChart data={data} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
-          <Line type="monotone" dataKey="price" stroke="#fff" strokeWidth={2} dot={false} />
+        <LineChart data={[] /* Pass real chart data if available */} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
+          {/* <Line type="monotone" dataKey="price" stroke="#fff" strokeWidth={2} dot={false} /> */}
           <XAxis dataKey="time" hide />
           <YAxis hide />
           <Tooltip contentStyle={{ background: '#232347', border: 'none', borderRadius: '8px', color: '#fff' }} />
@@ -38,7 +36,7 @@ export function TokenCard() {
           <span className="text-xs">Buy/Sell</span>
         </button>
         <button className="flex flex-col items-center">
-          <Swap className="w-6 h-6" />
+          <ArrowLeftRight className="w-6 h-6" />
           <span className="text-xs">Swap</span>
         </button>
         <button className="flex flex-col items-center">
@@ -56,11 +54,11 @@ export function TokenCard() {
       </div>
       <div className="mt-6">
         <div className="flex items-center gap-2">
-          <img src="/avax-logo.png" alt="AVAX" className="w-6 h-6" />
-          <span>AVAX</span>
-          <span className="text-red-400 text-xs">-4.22%</span>
+          <img src={logo} alt={symbol} className="w-6 h-6" />
+          <span>{symbol}</span>
+          <span className={change >= 0 ? "text-green-400 text-xs" : "text-red-400 text-xs"}>{change >= 0 ? '+' : ''}{change.toFixed(2)}%</span>
         </div>
-        <div className="text-gray-300 text-sm">$0.00</div>
+        <div className="text-gray-300 text-sm">{balance.toFixed(4)}</div>
       </div>
     </div>
   );
