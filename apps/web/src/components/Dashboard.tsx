@@ -301,38 +301,38 @@ export function Dashboard() {
                     <button className="w-full flex items-center gap-3 p-3 bg-stellar-500 text-white rounded-lg hover:bg-stellar-600 transition">
                       <LucideIcons.Download className="w-5 h-5" />
                       <span>Receive</span>
-                    </button>
+            </button>
                     <button className="w-full flex items-center gap-3 p-3 bg-[#232347] text-white rounded-lg hover:bg-[#181830] transition">
                       <LucideIcons.Upload className="w-5 h-5" />
                       <span>Bridge Assets</span>
-                    </button>
+            </button>
                     <button className="w-full flex items-center gap-3 p-3 bg-[#232347] text-white rounded-lg hover:bg-[#181830] transition">
                       <LucideIcons.Lock className="w-5 h-5" />
                       <span>Stake Tokens</span>
-                    </button>
-                  </div>
+            </button>
+          </div>
                 </div>
               </div>
             )}
 
             {activeTab === 'portfolio' && (
               <div className="space-y-6">
-                {/* Portfolio Stats */}
-                <PortfolioStats stats={stats} />
+        {/* Portfolio Stats */}
+        <PortfolioStats stats={stats} />
                 
-                {/* Token Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {portfolioData?.items?.filter(token => token.quote > 0).map((token) => (
-                    <TokenCard
-                      key={token.contract_address}
-                      symbol={token.contract_ticker_symbol}
-                      price={token.quote_rate}
-                      change={token.quote_rate_24h ? ((token.quote_rate - token.quote_rate_24h) / token.quote_rate_24h) * 100 : 0}
-                      balance={parseFloat(token.balance) / Math.pow(10, token.decimals)}
-                      logo={token.logo_url}
-                    />
-                  ))}
-                </div>
+        {/* Token Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {portfolioData?.items?.filter(token => token.quote > 0).map((token) => (
+            <TokenCard
+              key={token.contract_address}
+              symbol={token.contract_ticker_symbol}
+              price={token.quote_rate}
+              change={token.quote_rate_24h ? ((token.quote_rate - token.quote_rate_24h) / token.quote_rate_24h) * 100 : 0}
+              balance={parseFloat(token.balance) / Math.pow(10, token.decimals)}
+              logo={token.logo_url}
+            />
+          ))}
+        </div>
               </div>
             )}
 
@@ -439,7 +439,7 @@ export function Dashboard() {
                     </ResponsiveContainer>
                   </div>
                 </div>
-              </div>
+        </div>
             )}
           </motion.div>
         </AnimatePresence>
